@@ -2,7 +2,7 @@
 
 PyTorch implementation of ["Personalized Clustering via Targeted Representation Learning"] (AAAI-2025).
 
-The conference paper: [arxiv_now](https://arxiv.org/abs/2412.13690).
+The conference paper: [AAAI](https://ojs.aaai.org/index.php/AAAI/article/view/33845).
 
 For Appendix of the paper, you can get it [here](https://arxiv.org/abs/2412.13690). 
 
