@@ -27,8 +27,12 @@ class BaNet(nn.Module):
     def forward(self, x_i, x_j, flag):
         h_i = self.resnet(x_i)
         h_j = self.resnet(x_j)
-        ha_i = self.selfAttention(h_i, flag)
-        ha_j = self.selfAttention(h_j, flag)
+        if self.selfAttention is None:
+            ha_i = h_i
+            ha_j = h_j
+        else:
+            ha_i = self.selfAttention(h_i, flag)
+            ha_j = self.selfAttention(h_j, flag)
 
         z_i = normalize(self.instance_projector(ha_i), dim=1)
         z_j = normalize(self.instance_projector(ha_j), dim=1)
@@ -40,7 +44,10 @@ class BaNet(nn.Module):
 
     def forward_cluster(self, x, device='cpu'):
         h = self.resnet(x)
-        ha = self.selfAttention(h, torch.ones(h.size(0)).to(device))
+        if self.selfAttention is None:
+            ha = h
+        else:
+            ha = self.selfAttention(h, torch.ones(h.size(0)).to(device))
         c = self.cluster_projector(ha)
         c = torch.argmax(c, dim=1)
         return c
@@ -51,6 +58,9 @@ class BaNet(nn.Module):
 
     def forward_z(self, x):
         h = self.resnet(x)
-        ha= self.selfAttention(h, torch.ones(h.size(0)))
+        if self.selfAttention is None:
+            ha = h
+        else:
+            ha = self.selfAttention(h, torch.ones(h.size(0)))
         z = normalize(self.instance_projector(ha), dim=1)
         return z

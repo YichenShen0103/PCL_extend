@@ -2,28 +2,30 @@ import numpy as np
 import torchvision.datasets as datasets
 from torch.utils.data import Dataset, Subset
 
-class ImageNetData():
+
+class ImageNetData:
     def __init__(self, path, seed, split_ratio=0.2, transform=None):
         np.random.seed(seed)
-        self.imagenet = datasets.ImageFolder(root=path,transform=transform)
+        self.imagenet = datasets.ImageFolder(root=path, transform=transform)
         self.random_index = np.random.permutation(len(self.imagenet))
         split_index = int(split_ratio * len(self.imagenet))
         self.train_indices = self.random_index[split_index:]
         self.test_indices = self.random_index[:split_index]
-        self.data_train=[]
-        self.data_test=[]
+        self.data_train = []
+        self.data_test = []
         for i in self.train_indices:
             self.data_train.append(self.imagenet[i])
         for i in self.test_indices:
             self.data_test.append(self.imagenet[i])
 
     def get_data(self):
-        return self.data_train,self.data_test
+        return self.data_train, self.data_test
+
 
 class ImageNet(Dataset):
     def __init__(self, data, transform=None):
-        self.data=data
-        self.transform=transform
+        self.data = data
+        self.transform = transform
 
     def __getitem__(self, index):
         if isinstance(index, np.float64):
@@ -33,3 +35,22 @@ class ImageNet(Dataset):
 
     def __len__(self):
         return len(self.data)
+
+    def labels(self):
+        return [label for _, label in self.data]
+
+
+class IndexedDataset(Dataset):
+    """Wraps an existing dataset to also return the sample index."""
+
+    def __init__(self, dataset):
+        self.dataset = dataset
+
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, index):
+        sample = self.dataset[index]
+        if isinstance(sample, tuple):
+            return (*sample, index)
+        return sample, index

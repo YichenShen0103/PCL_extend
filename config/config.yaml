@@ -1,18 +1,18 @@
 # general
 seed: 42
 workers: 1
-dataset_dir: "../datasets"
+dataset_dir: "/data1/shenyichen/dataset"
 
 # train options
-batch_size: 128
-image_size: 128
+batch_size: 256
+image_size: 224
 
 # model options
 resnet: "ResNet34" #ResNet34 / ResNet50
 feature_dim: 128
 
 # loss options
-learning_rate: 0.00001 #ImageNet 0.00001 CIFAR 0.00001
+learning_rate: 0.0001 #ImageNet 0.00001 CIFAR 0.00001
 weight_decay: 0.
 instance_temperature: 1.0
 cluster_temperature: 2.0
@@ -22,13 +22,28 @@ epochs: 500
 reload: False
 retrain: True
 
-dataset: "CIFAR-100" # CIFAR-10 / CIFAR-100 / ImageNet-10 
-model_path: "save/CIFAR100"
+dataset: "CIFAR-100" # CIFAR-10 / CIFAR-100 / ImageNet-10
+model_path: "save/cifar100_hw_lr"
+# model_path: "../PCL/save/pretrained/imagenet"
 label_strategy: 1 # 0-default; 1-personalized
-extend_proportion: 0  
+extend_proportion: 0
 
 i_query_strategy: 0 #0:random 1:diversity
 query_strategy: 1 #0:random 1:mix
 
-batch_iquery_num: 0  #initial query num  pair/batch
+batch_iquery_num: 0 #initial query num  pair/batch
 query_num: 10000 #total query num
+
+query_scheduler: "epoch"  #"batch" or "epoch"
+epoch_queries_per_epoch: 300
+epoch_query_neighbor_k: 20
+epoch_query_kmeans_iters: 5
+
+query_sup_epsilon: 0.1
+query_minmax_eps: 1e-6
+global_pairs_per_batch: 64
+global_pair_weight: 0.5
+global_pair_margin: 0.2
+global_query_warmup: 10
+global_candidate_pool: 4096
+memory_momentum: 0.0
